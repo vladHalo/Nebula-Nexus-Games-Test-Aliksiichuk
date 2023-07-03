@@ -1,7 +1,4 @@
-namespace Core.Scripts.Globals
+public static class Str
 {
-    public static class Str
-    {
-        public const string Money = "Money";
-    }
+    public const string MoveSpeed = "MoveSpeed";
 }

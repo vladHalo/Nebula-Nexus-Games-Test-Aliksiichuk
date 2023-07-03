@@ -1,6 +1,10 @@
-namespace Core.Scripts.Globals
+public class GameManager : SingletonMonoBehaviour<GameManager>
 {
-    public class GameManager : SingletonMonoBehaviour<GameManager>
+    public BezierCurve bezierCurve;
+
+    protected override void Awake()
     {
+        base.Awake();
+        bezierCurve = new BezierCurve();
     }
 }
