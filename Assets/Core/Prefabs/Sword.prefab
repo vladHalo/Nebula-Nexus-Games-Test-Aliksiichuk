@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 5822266582844532980}
   - component: {fileID: 815658009820153506}
   - component: {fileID: 192791611413439383}
-  - component: {fileID: 7033402322814136931}
-  - component: {fileID: 8232558273697889706}
+  - component: {fileID: 2793582582709924300}
   m_Layer: 0
   m_Name: Sword
   m_TagString: Untagged
@@ -85,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7033402322814136931
+--- !u!114 &2793582582709924300
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,25 +93,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 4458495696191962769}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1f4381c7c9f47f4971df8559eb19a3a, type: 3}
+  m_Script: {fileID: 11500000, guid: 740f3ca228aec444387dbc696695129f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _height: 6
   _speed: 1
+  _lerpTime: 50
   _offset: {x: 0, y: 0.3, z: 0}
-  _smoothLerp: {fileID: 8232558273697889706}
-  _countMoney: 10
---- !u!114 &8232558273697889706
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4458495696191962769}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf4ccbed44a537a4bbc8120acc128121, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _lerpTime: 10
-  _offset: {x: 0, y: 0.3, z: 0}
+  _firstPoint: {fileID: 0}
+  _lastPoint: {fileID: 0}
+  _itemType: 2
+  _itemMoveType: 0

@@ -53,11 +53,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxCapacity: 0
-  _delay: 0
+  _prefab: {fileID: 4458495696191962769, guid: 59dbebe3340556c4aafdf51130722f99, type: 3}
+  _time: 0.5
   _parent: {fileID: 0}
-  _items: []
-  _prefab: {fileID: 0}
-  point: {fileID: 5698260967117902999}
+  _itemTypeSet: 2
+  finishPoint: {fileID: 5698260967117902999}
+  items: []
 --- !u!65 &7656385830040225333
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -193,7 +194,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5698260967117902999}
   m_Layer: 0
-  m_Name: Point
+  m_Name: FinishPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

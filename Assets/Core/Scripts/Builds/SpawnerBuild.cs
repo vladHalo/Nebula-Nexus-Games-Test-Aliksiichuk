@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 using Core.Scripts.Items;
+using Core.Scripts.Player;
 using Lean.Pool;
 using UnityEngine;
 
@@ -8,6 +9,10 @@ namespace Core.Scripts.Builds
 {
     public class SpawnerBuild : Build
     {
+        [SerializeField] private Transform _startPoint;
+
+        private BackpackPlayer _backpackPlayer;
+
         private void Start()
         {
             StartCoroutine(SpawnItems());
@@ -17,15 +22,42 @@ namespace Core.Scripts.Builds
         {
             while (true)
             {
-                yield return new WaitForSeconds(_delay);
-                if (_items.Count < _maxCapacity)
+                yield return new WaitForSeconds(_time);
+                if (items.Count < _maxCapacity)
                 {
                     var item = LeanPool.Spawn(_prefab, _parent).GetComponent<Item>();
-                    Transform lastPoint = _items.Count == 0 ? point : _items.Last().transform;
-                    item.SetPointMove(transform, lastPoint);
-                    _items.Add(item);
+                    item._itemMoveType = ItemMoveType.Bezier;
+
+                    if (_backpackPlayer != null && _backpackPlayer.СapacityСheck())
+                    {
+                        item.FinishMoveBezier += () => { item._itemMoveType = ItemMoveType.Follow; };
+                        _backpackPlayer.GetItem(item, _startPoint);
+                        items.Remove(item);
+                    }
+                    else
+                    {
+                        item.FinishMoveBezier += () =>
+                        {
+                            items.Add(item);
+                            item._itemMoveType = ItemMoveType.None;
+                        };
+                        var lastPoint = items.Count == 0 ? finishPoint : items.Last().transform;
+                        item.SetPointMove(_startPoint, lastPoint);
+                    }
                 }
             }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.TryGetComponent(out BackpackPlayer backpackPlayer))
+                _backpackPlayer = backpackPlayer;
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.TryGetComponent(out BackpackPlayer backpackPlayer))
+                _backpackPlayer = null;
         }
     }
 }

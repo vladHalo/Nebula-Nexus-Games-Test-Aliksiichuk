@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 434948716912741261}
   - component: {fileID: 3577797749767636008}
   - component: {fileID: 1603865656364069090}
-  - component: {fileID: 4419480378000697458}
-  - component: {fileID: 8409364310228559391}
+  - component: {fileID: 7045247912121418747}
   m_Layer: 0
   m_Name: Metal
   m_TagString: Untagged
@@ -85,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4419480378000697458
+--- !u!114 &7045247912121418747
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,24 +93,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 955588996734964023}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08c4e62f13be4ea88ca66154205dfdb9, type: 3}
+  m_Script: {fileID: 11500000, guid: 740f3ca228aec444387dbc696695129f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _height: 6
   _speed: 1
+  _lerpTime: 50
   _offset: {x: 0, y: 0.3, z: 0}
-  _smoothLerp: {fileID: 8409364310228559391}
---- !u!114 &8409364310228559391
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 955588996734964023}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf4ccbed44a537a4bbc8120acc128121, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _lerpTime: 10
-  _offset: {x: 0, y: 0.3, z: 0}
+  _firstPoint: {fileID: 0}
+  _lastPoint: {fileID: 0}
+  _itemType: 1
+  _itemMoveType: 2

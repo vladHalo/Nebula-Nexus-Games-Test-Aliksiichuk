@@ -11,15 +11,16 @@ namespace Core.Scripts.Builds
     public abstract class Build : MonoBehaviour
     {
         [SerializeField] protected int _maxCapacity;
-        [SerializeField] protected float _delay;
+        [SerializeField] protected GameObject _prefab;
+
+        [HideIf("_maxCapacity", 0)] [SerializeField]
+        protected float _time;
 
         [HideIf("_maxCapacity", 0)] [SerializeField]
         protected Transform _parent;
-        protected List<Item> _items;
 
-        [HideIf("_maxCapacity", 0)] public GameObject _prefab;
-        public Transform point;
-
-        public List<Item> GetItems() => _items;
+        public ItemType _itemTypeSet;
+        public Transform finishPoint;
+        public List<Item> items;
     }
 }

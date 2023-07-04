@@ -7,6 +7,10 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../gas-station/Assets/Scripts/DropedResources/FollowScript.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../gas-station/Assets/Scripts/DropedResources/BezierCurve.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
   <component name="ProjectId" id="2S2EcnKVPwFTf5n2ctT70d2y5mv" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -52,7 +56,8 @@
       <workItem from="1688336366299" duration="630000" />
       <workItem from="1688382433931" duration="659000" />
       <workItem from="1688389643765" duration="27509000" />
-      <workItem from="1688423173830" duration="5049000" />
+      <workItem from="1688423173830" duration="5146000" />
+      <workItem from="1688462908481" duration="29170000" />
     </task>
     <servers />
   </component>

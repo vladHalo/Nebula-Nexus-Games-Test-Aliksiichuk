@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615278220556032564}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5, y: 1.16, z: -1.86}
+  m_LocalPosition: {x: 5, y: 0.95000005, z: -1.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -92,7 +92,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: befacae379b827742af684dbaf5705e8, type: 2}
+  - {fileID: 2100000, guid: 2b88e80a9a4b4e3418161f677af6864d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -138,12 +138,43 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 813589849851708049}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1, y: 1.16, z: -1.86}
+  m_LocalPosition: {x: 1, y: 0.95, z: -1.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5071298608860527030}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1174789422517334453
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8666323371779930065}
+  m_Layer: 0
+  m_Name: Point Destroy Items
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8666323371779930065
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174789422517334453}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.27, y: 0.95000005, z: -1.86}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5705109732952317172}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1392440375282076267
 GameObject:
@@ -253,7 +284,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1593866287428884942}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7, y: 1.16, z: -1.86}
+  m_LocalPosition: {x: 7, y: 0.95000005, z: -1.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -270,7 +301,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7759332541511730559}
   m_Layer: 0
-  m_Name: PointSwords
+  m_Name: FinishPointSwords
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -315,7 +346,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3807645077639542747}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3, y: 1.16, z: -1.86}
+  m_LocalPosition: {x: 3, y: 0.95000005, z: -1.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -401,7 +432,8 @@ SkinnedMeshRenderer:
   m_SkinnedMotionVectors: 1
   m_Mesh: {fileID: 7365927553504753263, guid: 2bf25b34837c10644984f504fa5f7ba4, type: 3}
   m_Bones: []
-  m_BlendShapeWeights: []
+  m_BlendShapeWeights:
+  - 0
   m_RootBone: {fileID: 0}
   m_AABB:
     m_Center: {x: 0, y: 0.27368134, z: 0}
@@ -420,7 +452,7 @@ GameObject:
   - component: {fileID: 7906759231356431380}
   - component: {fileID: 1902338337271990748}
   - component: {fileID: 1680480992599267586}
-  - component: {fileID: 4281081157983498362}
+  - component: {fileID: 1191962891699467631}
   - component: {fileID: 3602535092729126613}
   m_Layer: 0
   m_Name: FactoryBuild
@@ -446,6 +478,7 @@ Transform:
   - {fileID: 5800610482375169912}
   - {fileID: 1429153528051280348}
   - {fileID: 7759332541511730559}
+  - {fileID: 8666323371779930065}
   - {fileID: 5071298608860527030}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -463,12 +496,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxCapacity: 5
-  _delay: 0.5
-  _prefab: {fileID: 919132149155446097, guid: fd8d7733e006edb40af90d07c82d6a30, type: 3}
+  _prefab: {fileID: 4458495696191962769, guid: 59dbebe3340556c4aafdf51130722f99, type: 3}
+  _time: 1.2
   _parent: {fileID: 0}
-  _items: []
-  point: {fileID: 7759332541511730559}
-  _points:
+  _itemTypeSet: 1
+  finishPoint: {fileID: 7759332541511730559}
+  items: []
+  _conveerMaterial: {fileID: 2100000, guid: 2b88e80a9a4b4e3418161f677af6864d, type: 2}
+  mesh: {fileID: 1809954304975440998}
+  _collider:
+  - {fileID: 1680480992599267586}
+  - {fileID: 1191962891699467631}
+  _pointDestroyItem: {fileID: 8666323371779930065}
+  itemsSword: []
+  startPoints:
   - {fileID: 6869117873536997346}
   - {fileID: 460716644898859}
   - {fileID: 4583725071080123745}
@@ -513,7 +554,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 1.3
   m_Center: {x: 2.45, y: 0, z: 2.05}
---- !u!135 &4281081157983498362
+--- !u!135 &1191962891699467631
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -566,7 +607,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6061795497184972120}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1, y: 1.16, z: -1.86}
+  m_LocalPosition: {x: -1, y: 0.95000005, z: -1.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -583,7 +624,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5071298608860527030}
   m_Layer: 0
-  m_Name: PointsMetals
+  m_Name: StartPointsMetals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -607,7 +648,7 @@ Transform:
   - {fileID: 270841481730097294}
   - {fileID: 2113697154674131828}
   m_Father: {fileID: 5705109732952317172}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8933915618138384709
 GameObject:

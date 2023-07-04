@@ -3,18 +3,20 @@ using UnityEngine;
 
 namespace Core.Scripts.Items
 {
-    [RequireComponent(typeof(SmoothLerp))]
-    public abstract class Item : MonoBehaviour
+    public class Item : MonoBehaviour
     {
         [SerializeField] private float _height;
-        [SerializeField] private float _speed;
+        [SerializeField] private float _speed, _lerpTime;
         [SerializeField] private Vector3 _offset;
-        [SerializeField] private SmoothLerp _smoothLerp;
 
         private float _time;
         private float _minScale, _maxScale;
         private BezierCurve _bezierCurve;
-        private Transform _firstPoint, _lastPoint;
+        [SerializeField] private Transform _firstPoint, _lastPoint;
+
+        public ItemType _itemType;
+        public ItemMoveType _itemMoveType;
+        public Action FinishMoveBezier;
 
         private void Start()
         {
@@ -23,9 +25,16 @@ namespace Core.Scripts.Items
             _maxScale = transform.localScale.x;
         }
 
+        private void FixedUpdate()
+        {
+            if (_itemMoveType == ItemMoveType.Follow)
+                FollowMove();
+        }
+
         private void Update()
         {
-            MoveBezier();
+            if (_itemMoveType == ItemMoveType.Bezier)
+                BezierMove();
         }
 
         public void SetPointMove(Transform firstPoint, Transform lastPoint)
@@ -33,10 +42,22 @@ namespace Core.Scripts.Items
             _firstPoint = firstPoint;
             _lastPoint = lastPoint;
             _time = 0;
-            _smoothLerp.enabled = false;
         }
 
-        private void MoveBezier()
+        private void FollowMove()
+        {
+            transform.position =
+                Vector3.MoveTowards(transform.position, _lastPoint.position + _offset, _lerpTime * Time.deltaTime);
+
+            _time = Mathf.Lerp(_time, 1f, _lerpTime * Time.deltaTime);
+
+            if (_time > 0.99f)
+            {
+                _time = 0f;
+            }
+        }
+
+        private void BezierMove()
         {
             transform.position = _bezierCurve.GetPointOnBezierCurve(
                 _firstPoint.position,
@@ -54,9 +75,14 @@ namespace Core.Scripts.Items
 
             if (_time >= 1)
             {
-                _smoothLerp.SetFollow(_lastPoint);
-                _smoothLerp.enabled = true;
-                enabled = false;
+                _time = 0;
+                transform.localScale = Vector3.one;
+                transform.position = new Vector3(_lastPoint.position.x + _offset.x, _lastPoint.position.y + _offset.y,
+                    _lastPoint.position.z);
+
+                _itemMoveType = ItemMoveType.Follow;
+                FinishMoveBezier?.Invoke();
+                FinishMoveBezier = null;
             }
         }
     }

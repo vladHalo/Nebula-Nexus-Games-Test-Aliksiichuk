@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Scripts.Builds;
 using Core.Scripts.Items;
+using Lean.Pool;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Core.Scripts.Player
@@ -11,54 +14,139 @@ namespace Core.Scripts.Player
     {
         [SerializeField] private int _capacityMax;
         [SerializeField] private float _delay;
-        [SerializeField] private Transform _pointStartItems;
         [SerializeField] private MovementPlayer _movementPlayer;
+        [SerializeField] private Transform _pointStartItems;
         [SerializeField] private List<Item> _items;
 
-        public IEnumerator GetItems(Transform firstPoint, List<Item> items)
+        private Coroutine currentCoroutine;
+
+        public IEnumerator GetItems(List<Item> items, Transform firstPoint)
         {
-            while (items.Count != 0 && _items.Count <= _capacityMax)
+            while (_items.Count < _capacityMax)
             {
-                var last = items.Last();
+                if (items.Count != 0)
+                {
+                    GetItem(items.Last(), firstPoint);
+                    items.Remove(items.Last());
+                }
+
+                yield return new WaitForSeconds(_delay);
+            }
+
+            currentCoroutine = null;
+        }
+
+        public void GetItem(Item item, Transform firstPoint)
+        {
+            if (_items.Count < _capacityMax)
+            {
                 var lastPoint = _items.Count == 0 ? _pointStartItems : _items.Last().transform;
-                last.SetPointMove(firstPoint, lastPoint);
-                last.enabled = true;
-                _items.Add(last);
-                items.Remove(last);
+                item._itemMoveType = ItemMoveType.Bezier;
+                item.SetPointMove(firstPoint, lastPoint);
+                _items.Add(item);
 
                 if (_items.Count > 0)
                     _movementPlayer.SetLayerWeight(1, 1, 0.25f);
-                yield return new WaitForSeconds(_delay);
             }
         }
 
-        public IEnumerator SetItems(Transform lastPoint, List<Item> items)
+        public IEnumerator SetItems(List<Item> items, Transform lastPoint, ItemType itemType,
+            Action finishAction = null)
         {
             while (_items.Count != 0)
             {
-                var last = _items.Last();
-                last.SetPointMove(_pointStartItems, lastPoint);
-                last.enabled = true;
-                items.Add(last);
-                _items.Remove(last);
+                if (_items.Last()._itemType == itemType)
+                {
+                    var last = SetItem(lastPoint);
+                    items.Add(last);
+                }
+
+                yield return new WaitForSeconds(_delay);
+            }
+
+            items.Last().FinishMoveBezier += () => { finishAction?.Invoke(); };
+        }
+
+        private Item SetItem(Transform lastPoint)
+        {
+            var last = _items.Last();
+            last._itemMoveType = ItemMoveType.Bezier;
+            last.SetPointMove(_pointStartItems, lastPoint);
+            _items.Remove(last);
+
+            if (_items.Count == 0)
+                _movementPlayer.SetLayerWeight(1, 0, 0.25f);
+            return last;
+        }
+
+        public IEnumerator SetItems(FactoryBuild factoryBuild)
+        {
+            int index = 0;
+            while (_items.Count != 0 && factoryBuild.items.Count < factoryBuild.startPoints.Length)
+            {
+                var last = SetItem(factoryBuild.startPoints[index]);
+                factoryBuild.items.Add(last);
+                index++;
 
                 if (_items.Count == 0)
-                    _movementPlayer.SetLayerWeight(1, 0, 0.25f);
+                {
+                    factoryBuild.items.Last().FinishMoveBezier += () => { factoryBuild.OnMoveItemsToFactory(); };
+                }
+
                 yield return new WaitForSeconds(_delay);
             }
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerStay(Collider other)
         {
+            if (currentCoroutine != null) return;
+
             if (other.TryGetComponent(out SpawnerBuild spawnerBuild))
             {
-                StartCoroutine(GetItems(spawnerBuild.point, spawnerBuild.GetItems()));
+                currentCoroutine = StartCoroutine(GetItems(spawnerBuild.items, spawnerBuild.finishPoint));
+            }
+
+            if (other.TryGetComponent(out FactoryBuild factoryBuild))
+            {
+                var result = factoryBuild.ColliderСheck(other);
+
+                if (result == FactoryColliderType.Set)
+                {
+                    currentCoroutine = StartCoroutine(SetItems(factoryBuild));
+                }
+                else
+                {
+                    Debug.Log(FactoryColliderType.Get);
+                }
             }
 
             if (other.TryGetComponent(out StockpileBuild stockpileBuild))
             {
-                StartCoroutine(SetItems(stockpileBuild.point, stockpileBuild.GetItems()));
+                currentCoroutine = StartCoroutine(SetItems(stockpileBuild.items, stockpileBuild.finishPoint,
+                    stockpileBuild._itemTypeSet, stockpileBuild.DespawnItems));
             }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.TryGetComponent(out Build build))
+            {
+                if (currentCoroutine != null)
+                {
+                    StopCoroutine(currentCoroutine);
+                    currentCoroutine = null;
+                }
+            }
+        }
+
+        public bool СapacityСheck() => _items.Count < _capacityMax;
+
+        [Button]
+        private void ClearBackpack()
+        {
+            _items.ForEach(x => LeanPool.Despawn(x));
+            _items.Clear();
+            _movementPlayer.SetLayerWeight(1, 0, 0.25f);
         }
     }
 }
