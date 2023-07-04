@@ -10,11 +10,6 @@ public class BezierCurve
         float uuu = uu * u;
         float ttt = tt * t;
 
-        Vector3 p = uuu * p0;
-        p += 3f * uu * t * p1;
-        p += 3f * u * tt * p2;
-        p += ttt * p3;
-
-        return p;
+        return uuu * p0 + 3f * uu * t * p1 + 3f * u * tt * p2 + ttt * p3;
     }
 }

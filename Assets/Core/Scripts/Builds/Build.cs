@@ -1,0 +1,25 @@
+﻿using System.Collections.Generic;
+using Core.Scripts.Items;
+using Sirenix.OdinInspector;
+using UnityEngine;
+
+namespace Core.Scripts.Builds
+{
+    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(BoxCollider))]
+    [RequireComponent(typeof(SphereCollider))]
+    public abstract class Build : MonoBehaviour
+    {
+        [SerializeField] protected int _maxCapacity;
+        [SerializeField] protected float _delay;
+
+        [HideIf("_maxCapacity", 0)] [SerializeField]
+        protected Transform _parent;
+        protected List<Item> _items;
+
+        [HideIf("_maxCapacity", 0)] public GameObject _prefab;
+        public Transform point;
+
+        public List<Item> GetItems() => _items;
+    }
+}

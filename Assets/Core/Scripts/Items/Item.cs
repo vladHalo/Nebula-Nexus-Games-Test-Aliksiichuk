@@ -1,53 +1,63 @@
-using Lean.Pool;
+using System;
 using UnityEngine;
 
-public abstract class Item : MonoBehaviour
+namespace Core.Scripts.Items
 {
-    [SerializeField] private float _height;
-    [SerializeField] private float _speed;
-    [SerializeField] private Vector3 _offset;
-
-    private float _time;
-    private float _minScale, _maxScale;
-    private BezierCurve _bezierCurve;
-    private Transform _firstPoint, _lastPoint;
-    private ItemStatus _itemStatus;
-
-    private void Start()
+    [RequireComponent(typeof(SmoothLerp))]
+    public abstract class Item : MonoBehaviour
     {
-        _bezierCurve = GameManager.instance.bezierCurve;
-        _minScale = transform.localScale.x / 2;
-        _maxScale = transform.localScale.x;
-    }
+        [SerializeField] private float _height;
+        [SerializeField] private float _speed;
+        [SerializeField] private Vector3 _offset;
+        [SerializeField] private SmoothLerp _smoothLerp;
 
-    private void Update()
-    {
-        transform.position = _bezierCurve.GetPointOnBezierCurve(
-            _firstPoint.position,
-            new Vector3(_firstPoint.position.x, _firstPoint.position.y + _height, _firstPoint.position.z),
-            new Vector3(_lastPoint.position.x, _lastPoint.position.y + _height, _lastPoint.position.z),
-            new Vector3(_lastPoint.position.x + _offset.x, _lastPoint.position.y + _offset.y,
-                _lastPoint.position.z), _time);
+        private float _time;
+        private float _minScale, _maxScale;
+        private BezierCurve _bezierCurve;
+        private Transform _firstPoint, _lastPoint;
 
-        transform.localScale = new Vector3(
-            Mathf.Clamp(_time, _minScale, _maxScale),
-            Mathf.Clamp(_time, _minScale, _maxScale),
-            Mathf.Clamp(_time, _minScale, _maxScale));
-
-        _time += Time.deltaTime * _speed;
-
-        if (_time >= 1 && _itemStatus == ItemStatus.Disable)
+        private void Start()
         {
-            _time = 1;
-            LeanPool.Despawn(this);
+            _bezierCurve = GameManager.instance.bezierCurve;
+            _minScale = transform.localScale.x / 2;
+            _maxScale = transform.localScale.x;
         }
-    }
 
-    public void SetPointMove(Transform firstPoint, Transform lastPoint, ItemStatus itemStatus = ItemStatus.Enable)
-    {
-        _firstPoint = firstPoint;
-        _lastPoint = lastPoint;
-        _itemStatus = itemStatus;
-        _time = 0;
+        private void Update()
+        {
+            MoveBezier();
+        }
+
+        public void SetPointMove(Transform firstPoint, Transform lastPoint)
+        {
+            _firstPoint = firstPoint;
+            _lastPoint = lastPoint;
+            _time = 0;
+            _smoothLerp.enabled = false;
+        }
+
+        private void MoveBezier()
+        {
+            transform.position = _bezierCurve.GetPointOnBezierCurve(
+                _firstPoint.position,
+                new Vector3(_firstPoint.position.x, _firstPoint.position.y + _height, _firstPoint.position.z),
+                new Vector3(_lastPoint.position.x, _lastPoint.position.y + _height, _lastPoint.position.z),
+                new Vector3(_lastPoint.position.x + _offset.x, _lastPoint.position.y + _offset.y,
+                    _lastPoint.position.z), _time);
+
+            transform.localScale = new Vector3(
+                Mathf.Clamp(_time, _minScale, _maxScale),
+                Mathf.Clamp(_time, _minScale, _maxScale),
+                Mathf.Clamp(_time, _minScale, _maxScale));
+
+            _time += Time.deltaTime * _speed;
+
+            if (_time >= 1)
+            {
+                _smoothLerp.SetFollow(_lastPoint);
+                _smoothLerp.enabled = true;
+                enabled = false;
+            }
+        }
     }
 }

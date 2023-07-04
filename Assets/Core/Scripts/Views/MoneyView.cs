@@ -3,32 +3,32 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
-public class MoneyView : MonoBehaviour
+namespace Core.Scripts.Views
 {
-    [SerializeField] private Transform _lastPoint;
-    [SerializeField] private TextMeshProUGUI _moneyUIText;
-    [SerializeField] private List<Transform> _moneyListUI;
-
-    private Camera camera;
-
-    void Start()
+    public class MoneyView : MonoBehaviour
     {
-        camera = Camera.main;
-    }
+        [SerializeField] private Transform _lastPoint;
+        [SerializeField] private TextMeshProUGUI _moneyUIText;
+        [SerializeField] private List<Transform> _moneyListUI;
 
-    public void MoveMoneyUI(Transform startPoint)
-    {
-        var item = _moneyListUI.Find(x => x.gameObject.activeSelf == false);
-        item.gameObject.SetActive(true);
-        item.position = camera.WorldToScreenPoint(startPoint.position);
-        item.transform.localScale = Vector3.zero;
+        private Camera camera;
 
-        var seq = DOTween.Sequence();
-        seq.Append(item.DOScale(.3f, 0.3f).SetEase(Ease.OutBack));
-        seq.Insert(0.15f, item.DOMove(_lastPoint.position, .8f).SetEase(Ease.InBack));
-        seq.OnComplete(() =>
+        void Start()
         {
-            item.gameObject.SetActive(false);
-        });
+            camera = Camera.main;
+        }
+
+        public void MoveMoneyUI(Transform startPoint)
+        {
+            var item = _moneyListUI.Find(x => x.gameObject.activeSelf == false);
+            item.gameObject.SetActive(true);
+            item.position = camera.WorldToScreenPoint(startPoint.position);
+            item.transform.localScale = Vector3.zero;
+
+            var seq = DOTween.Sequence();
+            seq.Append(item.DOScale(.3f, 0.3f).SetEase(Ease.OutBack));
+            seq.Insert(0.15f, item.DOMove(_lastPoint.position, .8f).SetEase(Ease.InBack));
+            seq.OnComplete(() => { item.gameObject.SetActive(false); });
+        }
     }
 }
