@@ -9,13 +9,11 @@ namespace Core.Scripts.Builds
     public class FactoryBuild : Build
     {
         [SerializeField] private Material _conveerMaterial;
-        [SerializeField] private SkinnedMeshRenderer mesh;
         [SerializeField] private SphereCollider[] _collider;
 
         [SerializeField] private Transform _pointDestroyItem;
 
-        [SerializeField] private List<Item> itemsSword;
-
+        public List<Item> itemsSword;
         public Transform[] startPoints;
 
         private void Update()
@@ -25,13 +23,13 @@ namespace Core.Scripts.Builds
                 Vector2 offset = new Vector2(Time.fixedDeltaTime, 0);
                 _conveerMaterial.mainTextureOffset -= offset;
             }
-            //mesh.SetBlendShapeWeight(0, mesh.GetBlendShapeWeight(0) + index);
         }
 
         public void OnMoveItemsToFactory()
         {
             int index = 0;
-            for (int i = 0; i < items.Count; i++)
+            int countItems = items.Count;
+            for (int i = 0; i < countItems; i++)
             {
                 items[i]._itemMoveType = ItemMoveType.None;
                 items[i].transform.DOMove(_pointDestroyItem.position, _time * i).OnComplete(() =>
