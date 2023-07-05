@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 270841481730097294}
   m_Layer: 0
-  m_Name: Point
+  m_Name: Point 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -124,7 +124,7 @@ GameObject:
   m_Component:
   - component: {fileID: 460716644898859}
   m_Layer: 0
-  m_Name: Point
+  m_Name: Point 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -270,7 +270,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2113697154674131828}
   m_Layer: 0
-  m_Name: Point
+  m_Name: Point 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -504,7 +504,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4583725071080123745}
   m_Layer: 0
-  m_Name: Point
+  m_Name: Point 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -681,11 +681,11 @@ MonoBehaviour:
   _pointDestroyItem: {fileID: 8666323371779930065}
   itemsSword: []
   startPoints:
-  - {fileID: 6869117873536997346}
-  - {fileID: 460716644898859}
-  - {fileID: 4583725071080123745}
-  - {fileID: 270841481730097294}
   - {fileID: 2113697154674131828}
+  - {fileID: 270841481730097294}
+  - {fileID: 4583725071080123745}
+  - {fileID: 460716644898859}
+  - {fileID: 6869117873536997346}
 --- !u!65 &7906759231356431380
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -764,7 +764,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6869117873536997346}
   m_Layer: 0
-  m_Name: Point
+  m_Name: Point 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -100,7 +100,5 @@ MonoBehaviour:
   _speed: 1
   _lerpTime: 50
   _offset: {x: 0, y: 0.3, z: 0}
-  _firstPoint: {fileID: 0}
-  _lastPoint: {fileID: 0}
-  _itemType: 2
-  _itemMoveType: 0
+  itemType: 2
+  itemMoveType: 0

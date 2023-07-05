@@ -7,38 +7,46 @@ namespace Core.Scripts.Player
     {
         [SerializeField] private BackpackPlayer _backpack;
 
-        private Coroutine currentCoroutine;
+        private Coroutine _currentCoroutine;
 
-        private void OnTriggerStay(Collider other)
+        private void OnTriggerEnter(Collider other)
         {
-            if (currentCoroutine != null || !other.TryGetComponent(out Build build)) return;
-
-            if (other.TryGetComponent(out SpawnerBuild spawnerBuild))
+            if (other.TryGetComponent(out FactoryBuild factory))
             {
-                currentCoroutine = StartCoroutine(_backpack.GetItems(spawnerBuild.items, spawnerBuild.finishPoint));
-            }
-
-            if (other.TryGetComponent(out FactoryBuild factoryBuild))
-            {
-                var result = factoryBuild.ColliderСheck(other);
+                var result = factory.ColliderСheck(other);
 
                 if (result == FactoryColliderType.Set)
                 {
-                    if (factoryBuild.items.Count > 0) return;
-                    currentCoroutine = StartCoroutine(_backpack.SetItems(factoryBuild.items, ItemType.Metal,
-                        factoryBuild.OnMoveItemsToFactory, factoryBuild.startPoints));
+                    if (factory.items.Count > 0) return;
+                    StartCoroutine(_backpack.SetItems(factory, ItemType.Metal, factory.startPoints));
                 }
-                else
+            }
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (_currentCoroutine != null || !other.TryGetComponent(out Build build)) return;
+
+            if (other.TryGetComponent(out SpawnerBuild spawner))
+            {
+                _currentCoroutine = StartCoroutine(_backpack.GetItems(spawner.items, spawner.finishPoint));
+            }
+
+            if (other.TryGetComponent(out FactoryBuild factory))
+            {
+                var result = factory.ColliderСheck(other);
+
+                if (result == FactoryColliderType.Get)
                 {
-                    currentCoroutine =
-                        StartCoroutine(_backpack.GetItems(factoryBuild.itemsSword, factoryBuild.finishPoint));
+                    _currentCoroutine =
+                        StartCoroutine(_backpack.GetItems(factory.itemsSword, factory.finishPoint));
                 }
             }
 
-            if (other.TryGetComponent(out StockpileBuild stockpileBuild))
+            if (other.TryGetComponent(out StockpileBuild stockpile))
             {
-                currentCoroutine = StartCoroutine(_backpack.SetItems(stockpileBuild.items,
-                    ItemType.Sword, stockpileBuild.DespawnItems, stockpileBuild.finishPoint));
+                _currentCoroutine = StartCoroutine(_backpack.SetItems(stockpile,
+                    ItemType.Sword, stockpile.finishPoint));
                 _backpack.movementPlayer.SetLayerWeight(1, 0, 0.25f);
             }
         }
@@ -47,10 +55,10 @@ namespace Core.Scripts.Player
         {
             if (other.TryGetComponent(out Build build))
             {
-                if (currentCoroutine != null)
+                if (_currentCoroutine != null)
                 {
-                    StopCoroutine(currentCoroutine);
-                    currentCoroutine = null;
+                    StopCoroutine(_currentCoroutine);
+                    _currentCoroutine = null;
                 }
             }
 

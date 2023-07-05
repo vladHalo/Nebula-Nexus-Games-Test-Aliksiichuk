@@ -11,7 +11,6 @@ namespace Core.Scripts.Builds
     {
         [SerializeField] private Material _conveerMaterial;
         [SerializeField] private SphereCollider[] _collider;
-
         [SerializeField] private Transform _pointDestroyItem;
 
         private int _speed;
@@ -32,26 +31,26 @@ namespace Core.Scripts.Builds
             }
         }
 
-        public void OnMoveItemsToFactory()
+        public override void WorkBuildWithItems()
         {
             _speed = 1;
-            for (int i = items.Count - 1; i >= 0; i--)
+            for (int i = 0; i < items.Count; i++)
             {
-                items[i]._itemMoveType = ItemMoveType.None;
-                items[i].transform.DOMove(_pointDestroyItem.position, _time * (items.Count - i)).OnComplete(() =>
+                items[i].itemMoveType = ItemMoveType.None;
+                items[i].transform.DOMove(_pointDestroyItem.position, _time * (i + 1)).OnComplete(() =>
                 {
-                    var last = items.Last();
-                    LeanPool.Despawn(last);
-                    items.Remove(last);
+                    var first = items.First();
+                    LeanPool.Despawn(first);
+                    items.Remove(first);
 
                     var sword = LeanPool.Spawn(_prefab, _pointDestroyItem.position, _prefab.transform.rotation, _parent)
                         .GetComponent<Item>();
-                    sword._itemMoveType = ItemMoveType.None;
+                    sword.itemMoveType = ItemMoveType.None;
                     sword.transform.DOMove(finishPoint.position, 1).OnComplete(() =>
                         {
                             var lastPoint = itemsSword.Count == 0 ? finishPoint : itemsSword.Last().transform;
                             sword.SetPointMove(null, lastPoint);
-                            sword._itemMoveType = ItemMoveType.Follow;
+                            sword.itemMoveType = ItemMoveType.Follow;
                             itemsSword.Add(sword);
                         })
                         .SetEase(Ease.Linear);

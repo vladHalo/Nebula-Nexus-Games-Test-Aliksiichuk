@@ -1,7 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Scripts.Builds;
 using Core.Scripts.Items;
 using Lean.Pool;
 using Sirenix.OdinInspector;
@@ -24,7 +24,15 @@ namespace Core.Scripts.Player
             {
                 if (items.Count != 0)
                 {
-                    GetItem(items.Last(), firstPoint);
+                    var last = items.Last();
+                    if (_items.Count < _capacityMax)
+                    {
+                        var lastPoint = _items.Count == 0 ? _pointStartItems : _items.Last().transform;
+                        last.itemMoveType = ItemMoveType.Bezier;
+                        last.SetPointMove(firstPoint, lastPoint);
+                        _items.Add(last);
+                    }
+
                     items.Remove(items.Last());
                 }
 
@@ -35,49 +43,43 @@ namespace Core.Scripts.Player
 
                 yield return new WaitForSeconds(_delay);
             }
-
-            //currentCoroutine = null;
         }
 
-        public void GetItem(Item item, Transform firstPoint)
-        {
-            if (_items.Count < _capacityMax)
-            {
-                var lastPoint = _items.Count == 0 ? _pointStartItems : _items.Last().transform;
-                item._itemMoveType = ItemMoveType.Bezier;
-                item.SetPointMove(firstPoint, lastPoint);
-                _items.Add(item);
-            }
-        }
-
-        public IEnumerator SetItems(List<Item> items, ItemType itemType,
-            Action finishAction, params Transform[] startPoints)
+        public IEnumerator SetItems(Build build, ItemType itemType, params Transform[] startPoints)
         {
             for (int i = _items.Count - 1; i >= 0; i--)
             {
-                if (_items[i]._itemType == itemType)
-                {
-                    int index = i;
-                    if (startPoints.Length == 1) index = 0;
-                    items.Add(_items[i]);
-                    _items[i]._itemMoveType = ItemMoveType.Bezier;
-                    _items[i].SetPointMove(_pointStartItems, startPoints[index]);
-                    _items.Remove(_items[i]);
+                if (_items[i].itemType != itemType) continue;
+                int index = i;
+                if (startPoints.Length == 1) index = 0;
+                build.items.Add(_items[i]);
+                _items[i].itemMoveType = ItemMoveType.Bezier;
+                _items[i].SetPointMove(_pointStartItems, startPoints[index]);
+                _items.Remove(_items[i]);
 
-                    if (_items.Count == 0)
-                        movementPlayer.SetLayerWeight(1, 0, 0.25f);
-                    RefreshPosition();
-                    yield return new WaitForSeconds(_delay);
+                if (itemType == ItemType.Sword)
+                {
+                    var last = build.items.Last();
+                    last.FinishMoveBezier += () =>
+                    {
+                        LeanPool.Despawn(last, 3);
+                        build.items.Remove(last);
+                        build.WorkBuildWithItems();
+                    };
                 }
+
+                if (_items.Count == 0)
+                    movementPlayer.SetLayerWeight(1, 0, 0.25f);
+                RefreshPosition();
+                yield return new WaitForSeconds(_delay);
             }
 
-            if (items.Count != 0)
-                items.Last().FinishMoveBezier += () => { finishAction?.Invoke(); };
+            if (build.items.Count == 0) yield break;
+            if (itemType == ItemType.Metal)
+                build.items.Last().FinishMoveBezier += () => { build.WorkBuildWithItems(); };
         }
 
         public int CountItems() => _items.Count;
-
-        public bool СapacityСheck() => _items.Count < _capacityMax;
 
         private void RefreshPosition()
         {

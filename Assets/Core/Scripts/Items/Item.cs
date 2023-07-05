@@ -12,10 +12,10 @@ namespace Core.Scripts.Items
         private float _time;
         private float _minScale, _maxScale;
         private BezierCurve _bezierCurve;
-        [SerializeField] private Transform _firstPoint, _lastPoint;
+        private Transform _firstPoint, _lastPoint;
 
-        public ItemType _itemType;
-        public ItemMoveType _itemMoveType;
+        public ItemType itemType;
+        public ItemMoveType itemMoveType;
         public Action FinishMoveBezier;
 
         private void Start()
@@ -27,13 +27,13 @@ namespace Core.Scripts.Items
 
         private void FixedUpdate()
         {
-            if (_itemMoveType == ItemMoveType.Follow)
+            if (itemMoveType == ItemMoveType.Follow)
                 FollowMove();
         }
 
         private void Update()
         {
-            if (_itemMoveType == ItemMoveType.Bezier)
+            if (itemMoveType == ItemMoveType.Bezier)
                 BezierMove();
         }
 
@@ -80,7 +80,7 @@ namespace Core.Scripts.Items
                 transform.position = new Vector3(_lastPoint.position.x + _offset.x, _lastPoint.position.y + _offset.y,
                     _lastPoint.position.z);
 
-                _itemMoveType = ItemMoveType.Follow;
+                itemMoveType = ItemMoveType.Follow;
                 FinishMoveBezier?.Invoke();
                 FinishMoveBezier = null;
             }

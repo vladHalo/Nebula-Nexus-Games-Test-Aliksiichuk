@@ -1,5 +1,4 @@
 ﻿using Core.Scripts.Player;
-using Lean.Pool;
 using TMPro;
 using UnityEngine;
 
@@ -7,28 +6,27 @@ namespace Core.Scripts.Builds
 {
     public class StockpileBuild : Build
     {
-        [SerializeField] private GameObject panel;
-        [SerializeField] private TextMeshProUGUI countSwordUI;
-        [SerializeField] private int countSword;
+        [SerializeField] private GameObject _panel;
+        [SerializeField] private TextMeshProUGUI _countSwordUI;
 
-        public void DespawnItems()
+        private int _countSword;
+
+        public override void WorkBuildWithItems()
         {
-            items.ForEach(x => LeanPool.Despawn(x, 3));
-            countSword += items.Count;
-            items.Clear();
-            countSwordUI.text = $"{countSword}";
+            _countSword++;
+            _countSwordUI.text = $"{_countSword}";
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if (other.TryGetComponent(out MovementPlayer movementPlayer))
-                panel.SetActive(true);
+                _panel.SetActive(true);
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (other.TryGetComponent(out MovementPlayer movementPlayer))
-                panel.SetActive(false);
+                _panel.SetActive(false);
         }
     }
 }
