@@ -2,11 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Core.Scripts.Builds;
 using Core.Scripts.Items;
 using Lean.Pool;
 using Sirenix.OdinInspector;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Core.Scripts.Player
@@ -15,11 +13,10 @@ namespace Core.Scripts.Player
     {
         [SerializeField] private int _capacityMax;
         [SerializeField] private float _delay;
-        [SerializeField] private MovementPlayer _movementPlayer;
         [SerializeField] private Transform _pointStartItems;
         [SerializeField] private List<Item> _items;
 
-        private Coroutine currentCoroutine;
+        public MovementPlayer movementPlayer;
 
         public IEnumerator GetItems(List<Item> items, Transform firstPoint)
         {
@@ -33,13 +30,13 @@ namespace Core.Scripts.Player
 
                 if (_items.Count == 1)
                 {
-                    _items[0].FinishMoveBezier += () => { _movementPlayer.SetLayerWeight(1, 1, 0.25f); };
+                    _items[0].FinishMoveBezier += () => { movementPlayer.SetLayerWeight(1, 1, 0.25f); };
                 }
 
                 yield return new WaitForSeconds(_delay);
             }
 
-            currentCoroutine = null;
+            //currentCoroutine = null;
         }
 
         public void GetItem(Item item, Transform firstPoint)
@@ -56,95 +53,47 @@ namespace Core.Scripts.Player
         public IEnumerator SetItems(List<Item> items, ItemType itemType,
             Action finishAction, params Transform[] startPoints)
         {
-            int index = 0;
-            while (_items.Count != 0 && items.Count < startPoints.Length)
+            for (int i = _items.Count - 1; i >= 0; i--)
             {
-                if (_items.Last()._itemType == itemType)
+                if (_items[i]._itemType == itemType)
                 {
-                    var last = SetItem(startPoints[index]);
-                    items.Add(last);
-                    if (index < startPoints.Length - 1) index++;
-                }
+                    int index = i;
+                    if (startPoints.Length == 1) index = 0;
+                    items.Add(_items[i]);
+                    _items[i]._itemMoveType = ItemMoveType.Bezier;
+                    _items[i].SetPointMove(_pointStartItems, startPoints[index]);
+                    _items.Remove(_items[i]);
 
-                yield return new WaitForSeconds(_delay);
+                    if (_items.Count == 0)
+                        movementPlayer.SetLayerWeight(1, 0, 0.25f);
+                    RefreshPosition();
+                    yield return new WaitForSeconds(_delay);
+                }
             }
 
-            if (_items.Count == 0)
-            {
+            if (items.Count != 0)
                 items.Last().FinishMoveBezier += () => { finishAction?.Invoke(); };
-            }
         }
 
-        private Item SetItem(Transform lastPoint)
-        {
-            var last = _items.Last();
-            last._itemMoveType = ItemMoveType.Bezier;
-            last.SetPointMove(_pointStartItems, lastPoint);
-            _items.Remove(last);
-
-            if (_items.Count == 0)
-                _movementPlayer.SetLayerWeight(1, 0, 0.25f);
-            return last;
-        }
-
-        private void OnTriggerStay(Collider other)
-        {
-            if (currentCoroutine != null || !other.TryGetComponent(out Build build)) return;
-
-            if (other.TryGetComponent(out SpawnerBuild spawnerBuild))
-            {
-                currentCoroutine = StartCoroutine(GetItems(spawnerBuild.items, spawnerBuild.finishPoint));
-            }
-
-            if (other.TryGetComponent(out FactoryBuild factoryBuild))
-            {
-                var result = factoryBuild.ColliderСheck(other);
-
-                if (result == FactoryColliderType.Set)
-                {
-                    if (factoryBuild.items.Count > 0) return;
-                    currentCoroutine = StartCoroutine(SetItems(factoryBuild.items, factoryBuild._itemTypeSet,
-                        factoryBuild.OnMoveItemsToFactory, factoryBuild.startPoints));
-                }
-                else
-                {
-                    currentCoroutine = StartCoroutine(GetItems(factoryBuild.itemsSword, factoryBuild.finishPoint));
-                }
-            }
-
-            if (other.TryGetComponent(out StockpileBuild stockpileBuild))
-            {
-                currentCoroutine = StartCoroutine(SetItems(stockpileBuild.items,
-                    stockpileBuild._itemTypeSet, stockpileBuild.DespawnItems, stockpileBuild.finishPoint));
-                _movementPlayer.SetLayerWeight(1, 0, 0.25f);
-            }
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (other.TryGetComponent(out Build build))
-            {
-                if (currentCoroutine != null)
-                {
-                    StopCoroutine(currentCoroutine);
-                    currentCoroutine = null;
-                }
-            }
-
-            if (other.TryGetComponent(out StockpileBuild stockpileBuild))
-            {
-                _movementPlayer.SetLayerWeight(1, 1, 0.25f);
-            }
-        }
+        public int CountItems() => _items.Count;
 
         public bool СapacityСheck() => _items.Count < _capacityMax;
+
+        private void RefreshPosition()
+        {
+            for (int i = 0; i < _items.Count; i++)
+            {
+                var result = i == 0 ? _pointStartItems : _items[i - 1].transform;
+                _items[i].SetPointMove(null, result);
+            }
+        }
 
         [Button]
         private void ClearBackpack()
         {
             _items.ForEach(x => LeanPool.Despawn(x));
             _items.Clear();
-            _movementPlayer.SetLayerWeight(1, 0, 0.25f);
+            movementPlayer.SetLayerWeight(1, 0, 0.25f);
         }
     }
 }

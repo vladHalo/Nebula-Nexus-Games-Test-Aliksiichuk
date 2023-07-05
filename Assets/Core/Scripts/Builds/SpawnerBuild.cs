@@ -11,7 +11,7 @@ namespace Core.Scripts.Builds
     {
         [SerializeField] private Transform _startPoint;
 
-        private BackpackPlayer _backpackPlayer;
+        private BackpackPlayer _backpack;
 
         private void Start()
         {
@@ -28,10 +28,10 @@ namespace Core.Scripts.Builds
                     var item = LeanPool.Spawn(_prefab, _parent).GetComponent<Item>();
                     item._itemMoveType = ItemMoveType.Bezier;
 
-                    if (_backpackPlayer != null && _backpackPlayer.СapacityСheck())
+                    if (_backpack != null && _backpack.СapacityСheck())
                     {
                         item.FinishMoveBezier += () => { item._itemMoveType = ItemMoveType.Follow; };
-                        _backpackPlayer.GetItem(item, _startPoint);
+                        _backpack.GetItem(item, _startPoint);
                         items.Remove(item);
                     }
                     else
@@ -51,13 +51,13 @@ namespace Core.Scripts.Builds
         private void OnTriggerEnter(Collider other)
         {
             if (other.TryGetComponent(out BackpackPlayer backpackPlayer))
-                _backpackPlayer = backpackPlayer;
+                _backpack = backpackPlayer;
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (other.TryGetComponent(out BackpackPlayer backpackPlayer))
-                _backpackPlayer = null;
+                _backpack = null;
         }
     }
 }

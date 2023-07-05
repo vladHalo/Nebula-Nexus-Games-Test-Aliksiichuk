@@ -42,7 +42,6 @@ namespace Core.Scripts.Player
             _animator.SetFloat(Str.MoveSpeed, floatSpeed);
         }
 
-        //Change animation hands with items or not
         public void SetLayerWeight(int layerWeight, float value, float duration = 0)
         {
             DOTween.Kill(this);

@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Scripts.Player;
+﻿using Core.Scripts.Player;
 using Lean.Pool;
 using TMPro;
 using UnityEngine;
@@ -14,7 +13,7 @@ namespace Core.Scripts.Builds
 
         public void DespawnItems()
         {
-            items.ForEach(x => LeanPool.Despawn(x));
+            items.ForEach(x => LeanPool.Despawn(x, 3));
             countSword += items.Count;
             items.Clear();
             countSwordUI.text = $"{countSword}";

@@ -18,8 +18,7 @@ namespace Core.Scripts.Builds
 
         [HideIf("_maxCapacity", 0)] [SerializeField]
         protected Transform _parent;
-
-        public ItemType _itemTypeSet;
+        
         public Transform finishPoint;
         public List<Item> items;
     }
